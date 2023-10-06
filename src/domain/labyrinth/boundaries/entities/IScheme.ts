@@ -1,7 +1,7 @@
 export enum Cell {
   FLOOR,
   WALL,
-  ENTRANCE,
+  GATE,
   TRAP,
   MONSTER,
   TREASURE,

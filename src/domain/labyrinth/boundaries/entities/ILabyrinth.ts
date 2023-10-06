@@ -1,5 +1,5 @@
-import { ICoordinate } from './ICoordinate';
-import { IScheme } from './IScheme';
+import type { ICoordinate } from './ICoordinate';
+import type { IScheme } from './IScheme';
 
 /**
  * Labyrinth is a big dungeon with a lot of paths, traps, monsters and treasures.
@@ -7,17 +7,13 @@ import { IScheme } from './IScheme';
 export interface ILabyrinth {
   get name(): string;
   get scheme(): IScheme;
-  //
-  // entrances: Map<ICoordinate, string>;
+
+  get gates(): ICoordinate[];
+  addGate(point: ICoordinate): void;
+  removeGate(point: ICoordinate): void;
+
+  // TODO: implement traps, monsters and treasures;
   // traps: Map<ICoordinate, string>;
   // monsters: Map<ICoordinate, string>;
   // treasures: Map<ICoordinate, string>;
-  //
-  // addEntrance(): void;
-  //
-  // addTrap(): void;
-  //
-  // addMonster(): void;
-  //
-  // addTreasure(): void;
 }

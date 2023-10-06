@@ -27,11 +27,13 @@ module.exports = {
     }
   },
   rules: {
-    '@typescript-eslint/interface-name-prefix': 'off',
-    '@typescript-eslint/explicit-function-return-type': 'off',
-    '@typescript-eslint/explicit-module-boundary-types': 'off',
-    '@typescript-eslint/no-explicit-any': 'off',
+    // Not really needed on server side
+    "no-console": "off",
+    "require-await": "off",
+    "id-length": [ "error", { "exceptions": [ "_", /* placeholder */ "a", /* sort */ "b", /* sort */ "i" /* loop */ ] } ],
 
+    // Ignore errors for desctructurization and rest args in override methods
+    "@typescript-eslint/no-unused-vars": ["error", { "argsIgnorePattern": "^_", "ignoreRestSiblings": true }],
     "@typescript-eslint/consistent-type-imports": ["error", { "prefer": "type-imports" }],
     "import/order": [
       "error",
