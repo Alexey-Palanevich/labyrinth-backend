@@ -1,15 +1,13 @@
+import { ValidationError } from 'domain/common/DomainError';
 import { Cell } from 'domain/labyrinth/boundaries/entities/IScheme';
 
 import type { MazeAlgorithm } from 'domain/algorithms/MazeAlgorithm';
 import type { ICoordinate } from 'domain/labyrinth/boundaries/entities/ICoordinate';
-import type { ILabyrinth } from 'domain/labyrinth/boundaries/entities/ILabyrinth';
+import type {
+  ILabyrinth,
+  ILabyrinthInputDTO,
+} from 'domain/labyrinth/boundaries/entities/ILabyrinth';
 import type { IScheme } from 'domain/labyrinth/boundaries/entities/IScheme';
-
-export interface ILabyrinthInputDTO {
-  name: string;
-  algorithm: MazeAlgorithm;
-  scheme?: IScheme;
-}
 
 export class Labyrinth implements ILabyrinth {
   public name: string;
@@ -17,12 +15,12 @@ export class Labyrinth implements ILabyrinth {
   private readonly _scheme: IScheme;
   private readonly _gates: ICoordinate[];
 
-  constructor({ name, algorithm, scheme }: ILabyrinthInputDTO) {
-    this.validateName(name);
+  constructor(input: ILabyrinthInputDTO) {
+    this.validateInput(input);
 
-    this.name = name;
-    this._algorithm = algorithm;
-    this._scheme = scheme || this._algorithm.generate();
+    this.name = input.name;
+    this._algorithm = input.algorithm;
+    this._scheme = input.scheme || this._algorithm.generate();
 
     this._gates = this.findCoordinatesOf(Cell.GATE);
   }
@@ -51,63 +49,101 @@ export class Labyrinth implements ILabyrinth {
     return this._gates.splice(index, 1)[0];
   }
 
+  private validateInput(input: ILabyrinthInputDTO) {
+    this.validateName(input.name);
+
+    if (input.scheme) {
+      this.validateScheme(input.scheme);
+    }
+  }
+
   private validateName(name: string) {
-    if (name.length < 2) {
-      throw new Error('Name length should be more than 2 symbols.');
+    const isString = () => name && typeof name === 'string';
+    if (!isString()) {
+      throw new ValidationError("Name isn't provided.", name);
+    }
+
+    const isLongName = () => name.length >= 2;
+    if (!isLongName()) {
+      throw new ValidationError('Name is too short.', name);
+    }
+  }
+
+  private validateScheme(scheme: IScheme) {
+    const isArray = () => scheme instanceof Array;
+
+    const schemeHasRows = () => scheme.length > 0;
+
+    const everyRowHasCells = () => scheme.every((row) => row.length > 0);
+
+    const availableCells = Object.values(Cell);
+    const cellsFamiliarType = () =>
+      scheme
+        .flat()
+        .flat()
+        .every((cell) => availableCells.includes(cell));
+
+    if (
+      !isArray() ||
+      !schemeHasRows() ||
+      !everyRowHasCells() ||
+      !cellsFamiliarType()
+    ) {
+      throw new ValidationError("Scheme isn't valid.", scheme);
     }
   }
 
   private validateCoordinate(point: ICoordinate) {
-    if (!this.isInsideOfScheme(point)) {
-      throw new Error(`(${point.x}, ${point.y}) is outside of scheme`);
+    const isOutsideOfScheme = () => !this.getCell(point);
+
+    if (isOutsideOfScheme()) {
+      throw new ValidationError(`Point is outside a scheme.`, point);
     }
   }
 
-  private isInsideOfScheme(point: ICoordinate) {
-    return !!this.getCell(point);
-  }
-
   private validatePointForGate(point: ICoordinate) {
-    if (!this.isFloorConnectedToCell(point)) {
-      throw new Error(
-        `(${point.x},${point.y}) can't be supplied without connection to ${Cell.FLOOR}`,
+    const cellConnectsToFloor = () => {
+      const top = this.getCell({ y: point.y - 1, x: point.x });
+      const bottom = this.getCell({ y: point.y + 1, x: point.x });
+      const right = this.getCell({ y: point.y, x: point.x - 1 });
+      const left = this.getCell({ y: point.y, x: point.x + 1 });
+
+      return !![top, bottom, right, left].find((cell) => cell === Cell.FLOOR);
+    };
+
+    if (!cellConnectsToFloor()) {
+      throw new ValidationError(
+        `${Cell.GATE} can't be supplied without connection to ${Cell.FLOOR}.`,
+        point,
       );
     }
   }
 
-  private isFloorConnectedToCell(point: ICoordinate) {
-    const top = this._scheme[point.y - 1]?.[point.x];
-    const bottom = this._scheme[point.y + 1]?.[point.x];
-    const right = this._scheme[point.y]?.[point.x - 1];
-    const left = this._scheme[point.y]?.[point.x + 1];
-
-    return !![top, bottom, right, left].find((cell) => cell === Cell.FLOOR);
-  }
-
   private validateGatePoint(point: ICoordinate) {
-    if (!this.isGatePoint(point)) {
-      throw new Error(`${point} isn't ${Cell.GATE}`);
+    const isGatePoint = () => this.getCell(point) === Cell.GATE;
+
+    if (!isGatePoint()) {
+      throw new ValidationError(
+        `There isn't ${Cell.GATE} on this cell.`,
+        point,
+      );
     }
   }
 
-  private isGatePoint(point: ICoordinate) {
-    return this.getCell(point) === Cell.GATE;
-  }
-
   private getCell(point: ICoordinate) {
-    return this._scheme[point.y][point.x];
+    return this._scheme[point.y]?.[point.x];
   }
 
   private setCell(point: ICoordinate, cell: Cell) {
-    this._scheme[point.y][point.x] = cell;
+    this._scheme[point.y]![point.x] = cell;
   }
 
   private findCoordinatesOf(cell: Cell) {
     const points = [];
 
     for (let y = 0; y < this._scheme.length; y += 1) {
-      for (let x = 0; x < this._scheme[y].length; x += 1) {
-        if (this._scheme[y][x] === cell) {
+      for (let x = 0; x < this._scheme[y]!.length; x += 1) {
+        if (this._scheme[y]![x] === cell) {
           points.push({ x, y });
         }
       }

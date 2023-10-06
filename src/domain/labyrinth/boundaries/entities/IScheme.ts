@@ -1,5 +1,6 @@
+// TODO: use Letters?
 export enum Cell {
-  FLOOR,
+  FLOOR = 1, // skip 0 as falsy value
   WALL,
   GATE,
   TRAP,
@@ -7,4 +8,5 @@ export enum Cell {
   TREASURE,
 }
 
-export type IScheme = Array<Array<Cell>>;
+type Row = [Cell, ...Cell[]];
+export type IScheme = [Row, ...Row[]];

@@ -30,7 +30,16 @@ module.exports = {
     // Not really needed on server side
     "no-console": "off",
     "require-await": "off",
-    "id-length": [ "error", { "exceptions": [ "_", /* placeholder */ "a", /* sort */ "b", /* sort */ "i" /* loop */ ] } ],
+    "id-length": [ "error", {
+      "exceptions": [
+        "_", // placeholder
+        "a", // sort
+        "b", // sort
+        "i", // loop
+        "x", // coordinate
+        "y"  // coordinate
+      ],
+    }],
 
     // Ignore errors for desctructurization and rest args in override methods
     "@typescript-eslint/no-unused-vars": ["error", { "argsIgnorePattern": "^_", "ignoreRestSiblings": true }],
@@ -50,7 +59,13 @@ module.exports = {
         ]
       }
     ],
-    // TODO: try to setup eslint for ban imports from ifra
+
+    '@typescript-eslint/ban-ts-comment': [
+      'error',
+      {'ts-ignore': 'allow-with-description'},
+    ],
+
+    // TODO: try to setup eslint for ban imports in domain from ifra
     // "import/no-restricted-paths": ["error", {
     //   zones: [
     //     {
