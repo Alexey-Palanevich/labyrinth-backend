@@ -5,8 +5,8 @@ import type { IAlgorithmRepositoryFactory } from 'domain/algorithms/boundaries/r
 import type { ILabyrinthRepositoryFactory } from 'domain/labyrinth/boundaries/repositories/ILabyrinthRepository';
 import type {
   ICreateLabyrinthUseCase,
-  ICreateLabyrinthUseCaseInputDTO,
-  ICreateLabyrinthUseCaseOutputDTO,
+  ICreateLabyrinthUseCaseInputDto,
+  ICreateLabyrinthUseCaseOutputDto,
 } from 'domain/labyrinth/boundaries/use-cases/ICreateLabyrinthUseCase';
 
 export class CreateLabyrinthUseCase implements ICreateLabyrinthUseCase {
@@ -16,8 +16,8 @@ export class CreateLabyrinthUseCase implements ICreateLabyrinthUseCase {
   ) {}
 
   async execute(
-    input: ICreateLabyrinthUseCaseInputDTO,
-  ): Promise<ICreateLabyrinthUseCaseOutputDTO> {
+    input: ICreateLabyrinthUseCaseInputDto,
+  ): Promise<ICreateLabyrinthUseCaseOutputDto> {
     this.validate(input);
     await this.validateExistedlabyrinth(input.name);
 
@@ -32,7 +32,7 @@ export class CreateLabyrinthUseCase implements ICreateLabyrinthUseCase {
       );
   }
 
-  private validate({ name, algorithm }: ICreateLabyrinthUseCaseInputDTO) {
+  private validate({ name, algorithm }: ICreateLabyrinthUseCaseInputDto) {
     this.validateName(name);
     this.validateAlgorithm(algorithm);
   }

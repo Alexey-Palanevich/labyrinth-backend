@@ -1,11 +1,9 @@
 import { Module } from '@nestjs/common';
-import { Labyrinth } from 'domain/labyrinth/core/entities/Labyrinth';
-import { LabyrinthUseCase } from 'domain/labyrinth/core/use-cases/LabyrinthUseCase';
-import { LabyrinthSymbol } from 'infra/labyrinth/DI';
-import {
-  LabyrinthRepository,
-  // LabyrinthRepositoryFactory,
-} from 'infra/labyrinth/repository/LabyrinthRepositoryFactory';
+import { MockedAlgorithmRepositoryFactory } from 'domain/labyrinth/__test__/__mock__/MockedAlgorithmRepositoryFactory';
+import { MockedLabyrinthRepositoryFactory } from 'domain/labyrinth/__test__/__mock__/MockedLabyrinthRepositoryFactory';
+import { CreateLabyrinthUseCase } from 'domain/labyrinth/core/use-cases/CreateLabyrinthUseCase';
+import { ReadLabyrinthUseCase } from 'domain/labyrinth/core/use-cases/ReadLabyrinthUseCase';
+import { USE_CASES } from 'infra/labyrinth/DI';
 
 import { LabyrinthController } from './labyrinth.controller';
 
@@ -13,13 +11,19 @@ import { LabyrinthController } from './labyrinth.controller';
   controllers: [LabyrinthController],
   providers: [
     {
-      provide: LabyrinthSymbol,
+      provide: USE_CASES.ICreateLabyrinthUseCase,
       useFactory: () =>
-        new LabyrinthUseCase(
-          (input) => new Labyrinth(input),
-          // new LabyrinthRepositoryFactory(),
-          { create: () => new LabyrinthRepository() },
+        new CreateLabyrinthUseCase(
+          // TODO: refactor
+          new MockedAlgorithmRepositoryFactory(),
+          new MockedLabyrinthRepositoryFactory(),
         ),
+    },
+    {
+      provide: USE_CASES.IReadLabyrinthUseCase,
+      useFactory: () =>
+        // TODO: refactor
+        new ReadLabyrinthUseCase(new MockedLabyrinthRepositoryFactory()),
     },
   ],
 })

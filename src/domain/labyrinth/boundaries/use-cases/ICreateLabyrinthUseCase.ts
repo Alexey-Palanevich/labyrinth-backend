@@ -4,14 +4,15 @@ import type { IScheme } from 'domain/labyrinth/boundaries/entities/IScheme';
 
 export interface ICreateLabyrinthUseCase {
   execute(
-    input: ICreateLabyrinthUseCaseInputDTO,
-  ): Promise<ICreateLabyrinthUseCaseOutputDTO>;
+    input: ICreateLabyrinthUseCaseInputDto,
+  ): Promise<ICreateLabyrinthUseCaseOutputDto>;
 }
 
-export interface ICreateLabyrinthUseCaseInputDTO {
+export interface ICreateLabyrinthUseCaseInputDto {
   name: string;
   algorithm: AvailableAlgorithms;
-  scheme?: IScheme;
+  scheme?: IScheme | null;
 }
 
-export interface ICreateLabyrinthUseCaseOutputDTO extends ILabyrinth {}
+export interface ICreateLabyrinthUseCaseOutputDto
+  extends Pick<ILabyrinth, 'name' | 'scheme' | 'gates'> {}

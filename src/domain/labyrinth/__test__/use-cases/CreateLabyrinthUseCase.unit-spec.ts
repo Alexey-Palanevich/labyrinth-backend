@@ -90,7 +90,7 @@ describe('CreateLabyrinthUseCase', () => {
   test('save labyrinth', async () => {
     const labyrinth = await createLabyrinthUseCase.execute({ name, algorithm });
 
-    assert.deepEqual(
+    assert.deepStrictEqual(
       labyrinth,
       MockedLabyrinthRepositoryFactory.inMemory[labyrinth.name],
     );

@@ -67,7 +67,7 @@ describe('Labyrinth Entity', () => {
           scheme,
         });
 
-        assert.deepEqual(scheme, labyrinth.scheme);
+        assert.deepStrictEqual(scheme, labyrinth.scheme);
       });
 
       test("generate a scheme if it wasn't passed", () => {
@@ -89,7 +89,7 @@ describe('Labyrinth Entity', () => {
         });
 
         assert.ok(labyrinth.scheme);
-        assert.deepEqual(labyrinth.scheme, labyrinth.scheme);
+        assert.deepStrictEqual(labyrinth.scheme, labyrinth.scheme);
       });
     });
 
@@ -101,7 +101,7 @@ describe('Labyrinth Entity', () => {
         });
 
         assert.ok(labyrinth.gates);
-        assert.deepEqual(labyrinth.gates, [
+        assert.deepStrictEqual(labyrinth.gates, [
           GATE_POINTS.entry,
           GATE_POINTS.exit,
         ]);
@@ -121,7 +121,7 @@ describe('Labyrinth Entity', () => {
           ],
           Cell.GATE,
         );
-        assert.deepEqual(labyrinth.gates, [
+        assert.deepStrictEqual(labyrinth.gates, [
           GATE_POINTS.entry,
           GATE_POINTS.exit,
           GATE_POINTS.additionalOne,

@@ -1,21 +1,43 @@
-import { Controller, Get, Post, Body, Param, Inject } from '@nestjs/common';
-import { LabyrinthUseCase } from 'domain/labyrinth/core/use-cases/LabyrinthUseCase';
-import { LabyrinthSymbol } from 'infra/labyrinth/DI';
+import {
+  Controller,
+  Post,
+  Body,
+  Inject,
+  HttpStatus,
+  Get,
+  Param,
+} from '@nestjs/common';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ICreateLabyrinthUseCase } from 'domain/labyrinth/boundaries/use-cases/ICreateLabyrinthUseCase';
+import { IReadLabyrinthUseCase } from 'domain/labyrinth/boundaries/use-cases/IReadLabyrinthUseCase';
+import { USE_CASES } from 'infra/labyrinth/DI';
+import { CreateLabyrinthOutputDto } from 'infra/labyrinth/dto/create-labyrinth-output.dto';
+import { ReadLabyrinthOutputDto } from 'infra/labyrinth/dto/read-labyrinth-output.dto';
 
-import { CreateLabyrinthDto } from './dto/create-labyrinth.dto';
+import { CreateLabyrinthInputDto } from './dto/create-labyrinth-input.dto';
 
+@ApiTags('Labyrinth')
 @Controller('labyrinth')
 export class LabyrinthController {
   constructor(
-    @Inject(LabyrinthSymbol)
-    private readonly labyrinthUseCase: LabyrinthUseCase,
+    @Inject(USE_CASES.ICreateLabyrinthUseCase)
+    private readonly createLabyrinthUseCase: ICreateLabyrinthUseCase,
+    @Inject(USE_CASES.IReadLabyrinthUseCase)
+    private readonly readLabyrinthUseCase: IReadLabyrinthUseCase,
   ) {}
 
   @Post()
-  create(@Body() createLabyrinthDto: CreateLabyrinthDto) {
-    console.log('controller');
-    return this.labyrinthUseCase.create(createLabyrinthDto);
-    // return this.labyrinthService.create(createLabyrinthDto);
+  @ApiOperation({ summary: 'Create a labyrinth and save it in the memory' })
+  @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: 'Bad Request' })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Success',
+    type: CreateLabyrinthOutputDto,
+  })
+  create(
+    @Body() createLabyrinthInputDTO: CreateLabyrinthInputDto,
+  ): Promise<CreateLabyrinthOutputDto> {
+    return this.createLabyrinthUseCase.execute(createLabyrinthInputDTO);
   }
 
   // @Get()
@@ -26,8 +48,14 @@ export class LabyrinthController {
   // }
   //
   @Get(':name')
-  findOne(@Param('name') name: string) {
-    return this.labyrinthUseCase.read(name);
+  @ApiOperation({ summary: 'Find labyrinth or return null' })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Success',
+    type: ReadLabyrinthOutputDto,
+  })
+  findOne(@Param('name') name: string): Promise<ReadLabyrinthOutputDto | null> {
+    return this.readLabyrinthUseCase.execute(name);
   }
   //
   // @Patch(':id')

@@ -22,5 +22,5 @@ export interface ILabyrinth {
 export interface ILabyrinthInputDTO {
   name: string;
   algorithm: MazeAlgorithm;
-  scheme?: IScheme;
+  scheme?: IScheme | null;
 }

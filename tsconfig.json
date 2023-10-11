@@ -22,5 +22,9 @@
       "domain/*": ["src/domain/*"],
       "infra/*": ["src/infra/*"]
     }
-  }
+  },
+  "include": [
+    "src/**/*",
+    "typing/**/*"
+  ]
 }
