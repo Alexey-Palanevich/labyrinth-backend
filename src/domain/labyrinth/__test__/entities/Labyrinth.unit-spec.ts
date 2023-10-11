@@ -1,4 +1,4 @@
-import { MazeAlgorithm } from 'domain/algorithms/MazeAlgorithm';
+import { mockedAlgorithm } from 'domain/labyrinth/__test__/__mock__/MockedMazeAlgorithm';
 import { Cell } from 'domain/labyrinth/boundaries/entities/IScheme';
 import { Labyrinth } from 'domain/labyrinth/core/entities/Labyrinth';
 import assert from 'node:assert';
@@ -6,17 +6,6 @@ import { describe, test } from 'node:test';
 
 import type { IScheme } from 'domain/labyrinth/boundaries/entities/IScheme';
 
-class MockedMazeAlgorithm extends MazeAlgorithm {
-  generate(): IScheme {
-    return [
-      [Cell.WALL, Cell.WALL, Cell.WALL, Cell.WALL],
-      [Cell.GATE, Cell.FLOOR, Cell.FLOOR, Cell.WALL],
-      [Cell.WALL, Cell.FLOOR, Cell.WALL, Cell.WALL],
-      [Cell.WALL, Cell.GATE, Cell.WALL, Cell.WALL],
-    ];
-  }
-}
-const mockedAlgorithm = new MockedMazeAlgorithm();
 const name = 'Labyrinth name';
 const GATE_POINTS = {
   entry: {
@@ -193,9 +182,7 @@ describe('Labyrinth Entity', () => {
           () => new Labyrinth({ name, algorithm: mockedAlgorithm }),
         );
       });
-    });
 
-    describe('scheme', () => {
       test('throw an error if name length less than two symbols', () => {
         assert.throws(
           () => {
@@ -211,7 +198,9 @@ describe('Labyrinth Entity', () => {
           new Labyrinth({ name, algorithm: mockedAlgorithm });
         });
       });
+    });
 
+    describe('scheme', () => {
       test("throw an error if a scheme isn't array", () => {
         const NOT_ARRAY = 'NOT_ARRAY';
 
