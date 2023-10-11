@@ -16,6 +16,9 @@ import { ReadLabyrinthOutputDto } from 'infra/labyrinth/dto/read-labyrinth-outpu
 
 import { CreateLabyrinthInputDto } from './dto/create-labyrinth-input.dto';
 
+import type { ICreateLabyrinthUseCaseOutputDto } from 'domain/labyrinth/boundaries/use-cases/ICreateLabyrinthUseCase';
+import type { IReadLabyrinthUseCaseOutputDto } from 'domain/labyrinth/boundaries/use-cases/IReadLabyrinthUseCase';
+
 @ApiTags('Labyrinth')
 @Controller('labyrinth')
 export class LabyrinthController {
@@ -34,19 +37,15 @@ export class LabyrinthController {
     description: 'Success',
     type: CreateLabyrinthOutputDto,
   })
-  create(
+  async create(
     @Body() createLabyrinthInputDTO: CreateLabyrinthInputDto,
   ): Promise<CreateLabyrinthOutputDto> {
-    return this.createLabyrinthUseCase.execute(createLabyrinthInputDTO);
+    return this.createLabyrinthUseCase
+      .execute(createLabyrinthInputDTO)
+      .then(this.toCreateLabyrinthOutputDto);
   }
 
-  // @Get()
-  // findAll() {
-  //   this.labyrinthUseCase.create('tatakae');
-  //   console.log('work!');
-  //   return this.labyrinthService.findAll();
-  // }
-  //
+  // TODO: investigate how to change status code for null response without access to framework
   @Get(':name')
   @ApiOperation({ summary: 'Find labyrinth or return null' })
   @ApiResponse({
@@ -54,20 +53,33 @@ export class LabyrinthController {
     description: 'Success',
     type: ReadLabyrinthOutputDto,
   })
-  findOne(@Param('name') name: string): Promise<ReadLabyrinthOutputDto | null> {
-    return this.readLabyrinthUseCase.execute(name);
+  async findOne(
+    @Param('name') name: string,
+  ): Promise<ReadLabyrinthOutputDto | null> {
+    return this.readLabyrinthUseCase
+      .execute(name)
+      .then(this.toReadLabyrinthOutputDto);
   }
-  //
-  // @Patch(':id')
-  // update(
-  //   @Param('id') id: string,
-  //   @Body() updateLabyrinthDto: UpdateLabyrinthDto,
-  // ) {
-  //   return this.labyrinthService.update(+id, updateLabyrinthDto);
-  // }
-  //
-  // @Delete(':id')
-  // remove(@Param('id') id: string) {
-  //   return this.labyrinthService.remove(+id);
-  // }
+
+  private toCreateLabyrinthOutputDto(
+    output: ICreateLabyrinthUseCaseOutputDto,
+  ): CreateLabyrinthOutputDto {
+    return {
+      name: output.name,
+      scheme: output.scheme,
+      gates: output.gates,
+    };
+  }
+
+  private toReadLabyrinthOutputDto(
+    output: IReadLabyrinthUseCaseOutputDto | null,
+  ): ReadLabyrinthOutputDto | null {
+    return output
+      ? {
+          name: output.name,
+          scheme: output.scheme,
+          gates: output.gates,
+        }
+      : null;
+  }
 }
