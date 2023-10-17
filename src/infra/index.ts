@@ -1,10 +1,11 @@
+import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AvailableAlgorithms } from 'domain/algorithms/AvailableAlgorithms';
 
 import { AppModule } from './app.module';
 
-export async function bootstrap(port: number) {
+export async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   const swaggerConfig = new DocumentBuilder()
@@ -19,5 +20,8 @@ export async function bootstrap(port: number) {
   const document = SwaggerModule.createDocument(app, swaggerConfig);
   SwaggerModule.setup('docs', app, document);
 
+  const port = app.get(ConfigService).get('PORT');
   await app.listen(port);
+
+  return port;
 }

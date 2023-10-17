@@ -1,4 +1,3 @@
-import { MockedAlgorithmRepositoryFactory } from 'domain/labyrinth/__test__/__mock__/MockedAlgorithmRepositoryFactory';
 import { MockedLabyrinthRepositoryFactory } from 'domain/labyrinth/__test__/__mock__/MockedLabyrinthRepositoryFactory';
 import { mockedAlgorithm } from 'domain/labyrinth/__test__/__mock__/MockedMazeAlgorithm';
 import { Labyrinth } from 'domain/labyrinth/core/entities/Labyrinth';
