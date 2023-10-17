@@ -10,11 +10,11 @@ import {
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ICreateLabyrinthUseCase } from 'domain/labyrinth/boundaries/use-cases/ICreateLabyrinthUseCase';
 import { IReadLabyrinthUseCase } from 'domain/labyrinth/boundaries/use-cases/IReadLabyrinthUseCase';
-import { USE_CASES } from 'infra/labyrinth/DI';
-import { CreateLabyrinthOutputDto } from 'infra/labyrinth/dto/create-labyrinth-output.dto';
-import { ReadLabyrinthOutputDto } from 'infra/labyrinth/dto/read-labyrinth-output.dto';
+import { USE_CASES } from 'infra/common/DI';
+import { CreateLabyrinthOutputDto } from 'infra/modules/labyrinth/dto/create-labyrinth-output.dto';
+import { ReadLabyrinthOutputDto } from 'infra/modules/labyrinth/dto/read-labyrinth-output.dto';
 
-import { CreateLabyrinthInputDto } from './dto/create-labyrinth-input.dto';
+import { CreateLabyrinthInputDto } from '../dto/create-labyrinth-input.dto';
 
 import type { ICreateLabyrinthUseCaseOutputDto } from 'domain/labyrinth/boundaries/use-cases/ICreateLabyrinthUseCase';
 import type { IReadLabyrinthUseCaseOutputDto } from 'domain/labyrinth/boundaries/use-cases/IReadLabyrinthUseCase';

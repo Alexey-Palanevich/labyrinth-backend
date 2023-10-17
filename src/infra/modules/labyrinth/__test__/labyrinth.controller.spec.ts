@@ -1,6 +1,6 @@
 import { Test } from '@nestjs/testing';
 
-import { LabyrinthController } from '../labyrinth.controller';
+import { LabyrinthController } from '../controllers/labyrinth.controller';
 
 import type { TestingModule } from '@nestjs/testing';
 

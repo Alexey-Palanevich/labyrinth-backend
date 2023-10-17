@@ -4,7 +4,6 @@ import {
   ApiPropertyOptional,
 } from '@nestjs/swagger';
 import { AvailableAlgorithms } from 'domain/algorithms/AvailableAlgorithms';
-import { Cell } from 'domain/labyrinth/boundaries/entities/IScheme';
 import { Maybe } from 'infra/common/Maybe';
 
 import type { IScheme } from 'domain/labyrinth/boundaries/entities/IScheme';
