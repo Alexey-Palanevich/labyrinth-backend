@@ -67,8 +67,12 @@
       "json",
       "ts"
     ],
+    "moduleNameMapper": {
+      "^domain(.*)$": "<rootDir>/domain$1",
+      "^infra(.*)$": "<rootDir>/infra$1"
+    },
     "rootDir": "src",
-    "testRegex": ".*\\.spec\\.ts$",
+    "testRegex": ".*\\.e2e-spec\\.ts$",
     "transform": {
       "^.+\\.(t|j)s$": "ts-jest"
     },

@@ -9,12 +9,12 @@ adminDB.auth(
   process.env['MONGO_INITDB_ROOT_PASSWORD'],
 );
 
-adminDB.createUser({
-  user: process.env["MONGO_NON_ROOT_USERNAME"],
+adminDB.getSiblingDB(process.env['MONGO_INITDB_DATABASE']).createUser({
+  user: process.env['MONGO_NON_ROOT_USERNAME'],
   pwd: process.env['MONGO_NON_ROOT_PASSWORD'],
-  roles: [{ role: "readWrite", db: process.env["MONGO_INITDB_DATABASE"]}]
-})
+  roles: [{ role: 'readWrite', db: process.env['MONGO_INITDB_DATABASE'] }],
+});
 
-adminDB.logout()
+adminDB.logout();
 
 print('END #################################################################');

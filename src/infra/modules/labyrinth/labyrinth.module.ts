@@ -1,16 +1,25 @@
 import { Module } from '@nestjs/common';
+import { MongooseModule } from '@nestjs/mongoose';
 import { MockedAlgorithmRepositoryFactory } from 'domain/labyrinth/__test__/__mock__/MockedAlgorithmRepositoryFactory';
-import { MockedLabyrinthRepositoryFactory } from 'domain/labyrinth/__test__/__mock__/MockedLabyrinthRepositoryFactory';
 import { CreateLabyrinthUseCase } from 'domain/labyrinth/core/use-cases/CreateLabyrinthUseCase';
 import { ReadLabyrinthUseCase } from 'domain/labyrinth/core/use-cases/ReadLabyrinthUseCase';
 import { REPOSITORIES, USE_CASES } from 'infra/common/DI';
-import { DbModule } from 'infra/db/db.module';
+import {
+  LabyrinthEntity,
+  LabyrinthEntitySchema,
+} from 'infra/modules/labyrinth/entities/labyrinth.entity';
 import { LabyrinthRepository } from 'infra/modules/labyrinth/repository/labyrinth.repository';
 
 import { LabyrinthController } from './controllers/labyrinth.controller';
 
+import type { ILabyrinthRepository } from 'domain/labyrinth/boundaries/repositories/ILabyrinthRepository';
+
 @Module({
-  imports: [DbModule],
+  imports: [
+    MongooseModule.forFeature([
+      { name: LabyrinthEntity.name, schema: LabyrinthEntitySchema },
+    ]),
+  ],
   controllers: [LabyrinthController],
   providers: [
     {
@@ -26,16 +35,24 @@ import { LabyrinthController } from './controllers/labyrinth.controller';
         return new CreateLabyrinthUseCase(
           // TODO: refactor
           new MockedAlgorithmRepositoryFactory(),
-          new MockedLabyrinthRepositoryFactory(),
+          {
+            create(): ILabyrinthRepository {
+              return rep;
+            },
+          },
         );
       },
       inject: [REPOSITORIES.ILabyrinthRepository],
     },
     {
       provide: USE_CASES.IReadLabyrinthUseCase,
-      useFactory: () =>
-        // TODO: refactor
-        new ReadLabyrinthUseCase(new MockedLabyrinthRepositoryFactory()),
+      useFactory: (rep) =>
+        new ReadLabyrinthUseCase({
+          create(): ILabyrinthRepository {
+            return rep;
+          },
+        }),
+      inject: [REPOSITORIES.ILabyrinthRepository],
     },
   ],
 })

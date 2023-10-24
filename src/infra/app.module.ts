@@ -6,8 +6,8 @@ import { LabyrinthModule } from 'infra/modules/labyrinth/labyrinth.module';
 @Module({
   imports: [
     ConfigModule.forRoot({ envFilePath: '.env', isGlobal: true }),
-    LabyrinthModule,
     DbModule,
+    LabyrinthModule,
   ],
 })
 export class AppModule {}
