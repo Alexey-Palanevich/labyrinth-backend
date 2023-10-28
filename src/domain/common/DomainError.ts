@@ -11,4 +11,5 @@ export class ValidationError extends DomainError {
 // TODO: find error codes
 export enum DomainErrorCodes {
   VALIDATION_ERROR = 1,
+  NO_CONTENT = 204,
 }

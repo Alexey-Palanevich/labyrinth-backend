@@ -6,8 +6,8 @@ import type {
 
 const inMemory: Record<string, ILabyrinth> = {};
 class MockedLabyrinthRepository implements ILabyrinthRepository {
-  async find(entity: Partial<ILabyrinth>): Promise<ILabyrinth | null> {
-    return entity.name ? inMemory[entity.name] || null : null;
+  async find(entity: Partial<ILabyrinth>): Promise<ILabyrinth[]> {
+    return Object.values(inMemory);
   }
 
   async findOneByName(name: string): Promise<ILabyrinth | null> {

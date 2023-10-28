@@ -1,0 +1,10 @@
+POST http://localhost:3003/labyrinth
+Content-Type: application/json
+
+{
+  "name": "Fuck",
+  "seed": 1
+}
+
+###
+GET http://localhost:3000/labyrinth/Fuck
